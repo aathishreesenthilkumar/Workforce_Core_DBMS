@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — Workforce Core // Marco Madonna Aesthetic</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <!-- Marco Madonna Custom CSS -->
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100vh;
+            max-height: 100vh;
+            overflow: hidden !important;
+            margin: 0;
+            padding: 0;
+        }
+        .login-top-bar {
+            padding: 0.65rem 2rem !important;
+            flex-shrink: 0;
+        }
+        .login-stage {
+            flex: 1 1 auto;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1.25rem;
+        }
+        .login-box {
+            max-width: 470px;
+            width: 100%;
+            padding: 1.6rem 2.2rem !important;
+            margin: auto;
+        }
+        .login-box .form-control {
+            padding: 0.55rem 0.95rem !important;
+            font-size: 0.92rem !important;
+        }
+        .login-box .btn-gs {
+            padding: 0.65rem 1.25rem !important;
+            font-size: 0.82rem !important;
+        }
+        .login-box .role-chip {
+            padding: 0.35rem 0.85rem !important;
+            font-size: 0.78rem !important;
+        }
+        @media (max-height: 620px) {
+            html, body {
+                overflow-y: auto !important;
+            }
+        }
+    </style>
+</head>
+<body class="d-flex flex-column">
+
+    <!-- Translucent Glassmorphic Top Bar -->
+    <header class="top-chrome login-top-bar">
+        <a href="login.html" class="chrome-brand">
+            <span class="brand-beacon"></span>
+            <span>Workforce <em>Core</em></span>
+            <span class="pill-tag dark ms-2" style="font-size: 0.75rem;">DBMS 23CS2013</span>
+        </a>
+        <div class="d-flex align-items-center gap-3">
+            <span class="pill-tag" style="font-size: 0.78rem;">
+                <span class="brand-beacon" style="width: 6px; height: 6px;"></span>
+                POSTGRESQL RELATIONAL ENGINE
+            </span>
+        </div>
+    </header>
+
+    <!-- Main Centered Authentication Stage (Locked to Viewport) -->
+    <main class="login-stage">
+        <div class="card login-box">
+            
+            <!-- Editorial Masthead inside Box -->
+            <div class="mb-3 pb-2 border-bottom" style="border-color: var(--border) !important;">
+                <div class="d-flex align-items-center justify-content-between mb-1">
+                    <span class="hero-tag mb-0" style="font-size: 0.78rem;">
+                        <span class="brand-beacon" style="width: 7px; height: 7px;"></span>
+                        AUTH GATE // 01
+                    </span>
+                    <span class="pill-tag dark" style="font-size: 0.72rem;">3NF VERIFIED</span>
+                </div>
+                <h2 class="fw-bold mb-1" style="letter-spacing: -0.04em; font-size: 1.75rem; color: var(--text);">
+                    Sign In <em>Portal</em>
+                </h2>
+                <p class="text-muted small mb-0 font-monospace" style="font-size: 0.8rem; color: var(--text-2) !important;">
+                    Employee Portal &bull; Attendance, Payroll & Leave Management
+                </p>
+            </div>
+
+            <div id="alertContainer"></div>
+
+            <!-- Fast Role Picker Chips -->
+            <div class="mb-3">
+                <label class="d-block font-monospace text-uppercase mb-1" style="font-size: 0.76rem; letter-spacing: 0.08em; color: var(--accent-text);">
+                    Select Role Preset:
+                </label>
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="button" class="role-chip demo-btn active" data-user="admin" data-pass="admin123">
+                        <i class="fa-solid fa-shield-halved"></i> Admin
+                    </button>
+                    <button type="button" class="role-chip demo-btn" data-user="isabella_hr" data-pass="manager123">
+                        <i class="fa-solid fa-user-tie"></i> HR Manager
+                    </button>
+                    <button type="button" class="role-chip demo-btn" data-user="brianne_db" data-pass="emp123">
+                        <i class="fa-solid fa-user"></i> Employee
+                    </button>
+                </div>
+            </div>
+
+            <!-- Form Controls -->
+            <form id="loginForm">
+                <div class="mb-2">
+                    <label for="username" class="d-block font-monospace text-uppercase mb-1" style="font-size: 0.76rem; letter-spacing: 0.06em; color: var(--text-2);">
+                        Username / Identifier
+                    </label>
+                    <input type="text" class="form-control" id="username" value="admin" placeholder="e.g. admin" required autofocus>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label for="password" class="font-monospace text-uppercase mb-0" style="font-size: 0.76rem; letter-spacing: 0.06em; color: var(--text-2);">
+                            Password
+                        </label>
+                        <span class="font-monospace" style="font-size: 0.72rem; color: var(--text-muted);">BCrypt Encrypted</span>
+                    </div>
+                    <input type="password" class="form-control" id="password" value="admin123" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" id="loginBtn" class="btn-gs w-100 py-2 text-uppercase">
+                    <span>Authenticate Session</span>
+                    <i class="fa-solid fa-arrow-right ms-2"></i>
+                </button>
+            </form>
+
+            <!-- Footer Footnote -->
+            <div class="mt-3 pt-2 border-top text-center" style="border-color: var(--border) !important;">
+                <div class="font-monospace" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">
+                    Karunya Institute of Technology and Sciences &bull; Course 23CS2013
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        const credsMap = {
+            admin: { user: 'admin', pass: 'admin123' },
+            isabella_hr: { user: 'isabella_hr', pass: 'manager123' },
+            brianne_db: { user: 'brianne_db', pass: 'emp123' }
+        };
+
+        function setCredentials(user, pass) {
+            const uField = document.getElementById('username');
+            const pField = document.getElementById('password');
+            if (uField && pField) {
+                uField.value = user;
+                pField.value = pass;
+            }
+        }
+
+        document.querySelectorAll('.demo-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.demo-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const u = btn.getAttribute('data-user');
+                const p = btn.getAttribute('data-pass');
+                setCredentials(u, p);
+            });
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const loginBtn = document.getElementById('loginBtn');
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span>Verifying Credentials...</span>';
+
+            try {
+                const res = await App.fetchAPI('/api/auth/login', {
+                    method: 'POST',
+                    body: { username, password }
+                });
+
+                if (res && res.success) {
+                    App.showAlert('alertContainer', 'Authentication successful. Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 500);
+                } else {
+                    throw new Error(res.message || 'Login failed');
+                }
+            } catch (err) {
+                App.showAlert('alertContainer', err.message || 'Invalid username or password.', 'danger');
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<span>Authenticate Session</span><i class="fa-solid fa-arrow-right ms-2"></i>';
+            }
+        });
+    </script>
+</body>
+</html>

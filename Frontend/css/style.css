@@ -1,0 +1,690 @@
+/* ==========================================================================
+   Marco Madonna Portfolio (Awwwards Nominee) Design System
+   Reference: https://marcomadonnadesign.com / https://www.awwwards.com/sites/marco-madonna-portfolio
+   Design Tokens: Deep Obsidian Canvas (#050505), Elevated Glass (#0d0a12),
+   Electric Violet Accent (H:258, S:90%, L:66% / #8b5cf6), Translucent Frosted Glass,
+   Typography: Prominent, bold scale with Hanken Grotesk & Space Mono.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+    /* Color Decision Tokens from Marco Madonna's Design System */
+    --h: 258;
+    --s: 90%;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --radius-pill: 999px;
+
+    --bg: #050505;
+    --bg-elevated: #0d0a12;
+    --bg-surface: #130f1a;
+    --bg-card: #0f0c16;
+    
+    --text: #f0f0f0;
+    --text-2: rgba(240, 240, 240, 0.72);
+    --text-muted: rgba(240, 240, 240, 0.50);
+    
+    --border: rgba(255, 255, 255, 0.10);
+    --border-hover: rgba(255, 255, 255, 0.20);
+    --glass-border: rgba(255, 255, 255, 0.14);
+    --dot: rgba(255, 255, 255, 0.08);
+    --nav-bg: rgba(8, 6, 12, 0.85);
+    --shadow: rgba(0, 0, 0, 0.65);
+
+    /* Electric Violet Accents */
+    --accent: hsl(var(--h) var(--s) 66%);        /* #8b5cf6 */
+    --accent-text: hsl(var(--h) var(--s) 77%);   /* #a78bfa */
+    --accent-strong: hsl(var(--h) var(--s) 60%); /* #7c3aed */
+    --accent-dim: hsl(var(--h) var(--s) 66% / 0.18);
+    --accent-glow: hsl(var(--h) var(--s) 62% / 0.40);
+    --glass-bg: hsl(var(--h) var(--s) 66% / 0.08);
+    --glass-bg-hover: hsl(var(--h) var(--s) 66% / 0.16);
+
+    /* Signals */
+    --signal-green: #10b981;
+    --signal-green-dim: rgba(16, 185, 129, 0.18);
+    --signal-red: #f43f5e;
+    --signal-red-dim: rgba(244, 63, 94, 0.18);
+    --signal-amber: #f59e0b;
+    --signal-amber-dim: rgba(245, 158, 11, 0.18);
+
+    /* Typography */
+    --font-body: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-mono: 'Space Mono', "Courier New", monospace;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --t-fast: 0.2s ease;
+    --t-base: 0.3s var(--ease);
+}
+
+[data-theme="light"] {
+    --bg: #faf9fc;
+    --bg-elevated: #f1edf9;
+    --bg-surface: #ffffff;
+    --bg-card: #f7f4fd;
+    --text: #17131f;
+    --text-2: rgba(23, 19, 31, 0.72);
+    --text-muted: rgba(23, 19, 31, 0.48);
+    --border: rgba(23, 19, 31, 0.12);
+    --border-hover: rgba(23, 19, 31, 0.22);
+    --glass-border: rgba(23, 19, 31, 0.15);
+    --dot: rgba(23, 19, 31, 0.07);
+    --nav-bg: rgba(250, 249, 252, 0.90);
+    --shadow: rgba(23, 19, 31, 0.14);
+    --accent: #7c3aed;
+    --accent-text: #6d28d9;
+    --accent-strong: #7c3aed;
+    --accent-dim: rgba(124, 58, 237, 0.12);
+    --accent-glow: rgba(124, 58, 237, 0.24);
+    --glass-bg: rgba(124, 58, 237, 0.06);
+    --glass-bg-hover: rgba(124, 58, 237, 0.12);
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 17.5px; /* Prominent Awwwards baseline scale */
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--bg);
+    background-image: radial-gradient(var(--dot) 1.2px, transparent 1.2px);
+    background-size: 26px 26px;
+    background-attachment: fixed;
+    color: var(--text);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    line-height: 1.55;
+    letter-spacing: -0.015em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+    background: var(--accent);
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   Marco Madonna Glassmorphic Top Navigation Bar
+   ========================================================================== */
+.top-chrome {
+    background-color: var(--nav-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--border);
+    padding: 1.1rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    transition: background-color var(--t-base), border-color var(--t-base);
+}
+
+.chrome-brand {
+    font-weight: 700;
+    font-size: 1.22rem;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    white-space: nowrap;
+}
+
+.chrome-brand em {
+    font-style: italic;
+    color: var(--accent-text);
+    font-weight: 500;
+}
+
+.chrome-brand .brand-beacon {
+    width: 9px;
+    height: 9px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 14px 3px var(--accent-glow);
+    animation: beaconPulse 2.4s infinite ease-in-out;
+}
+
+@keyframes beaconPulse {
+    0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 14px 3px var(--accent-glow); }
+    50% { opacity: 0.45; transform: scale(0.85); box-shadow: 0 0 7px 1px var(--accent-glow); }
+}
+
+.chrome-nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.chrome-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.35rem;
+}
+
+/* Navigation Links */
+.nav-link-gs {
+    color: var(--text-2);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 0.88rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 6px 0;
+    position: relative;
+    transition: color var(--t-fast);
+}
+
+.nav-link-gs::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow);
+    transition: width var(--t-base);
+}
+
+.nav-link-gs:hover {
+    color: var(--text);
+}
+
+.nav-link-gs:hover::after, .nav-link-gs.active::after {
+    width: 100%;
+}
+
+.nav-link-gs.active {
+    color: var(--accent-text);
+    font-weight: 700;
+}
+
+/* Mobile Nav Toggle */
+.mobile-nav-toggle {
+    display: none;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    padding: 0.45rem 0.8rem;
+    cursor: pointer;
+    font-size: 1.15rem;
+}
+
+@media (max-width: 991px) {
+    .chrome-nav {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--nav-bg);
+        backdrop-filter: blur(28px);
+        border-bottom: 1px solid var(--border);
+        flex-direction: column;
+        padding: 1.5rem 2.5rem;
+        gap: 1.25rem;
+    }
+    .chrome-nav.show {
+        display: flex;
+    }
+    .mobile-nav-toggle {
+        display: block;
+    }
+}
+
+/* ==========================================================================
+   Main Shell Layout & Hero
+   ========================================================================== */
+.app-container {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 3rem 3rem 7rem;
+}
+
+/* Hero Section (Marco Madonna Typography & Eyebrow) */
+.hero-statement {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 3rem;
+    margin-bottom: 3.5rem;
+    position: relative;
+}
+
+.hero-tag {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent-text);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.1rem;
+}
+
+.hero-title {
+    font-size: clamp(2.8rem, 6.2vw, 5.2rem);
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    margin: 0 0 1.2rem 0;
+    text-wrap: balance;
+}
+
+.hero-title em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--accent-text);
+    letter-spacing: -0.03em;
+}
+
+.hero-subtitle {
+    font-size: clamp(1.2rem, 1.8vw, 1.45rem);
+    color: var(--text-2);
+    max-width: 860px;
+    margin: 0;
+    font-weight: 350;
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   Marco Madonna Frosted Glass Cards (mm-card / gs-card)
+   ========================================================================== */
+.gs-card, .card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(160deg, var(--glass-bg), transparent 70%), var(--bg-elevated) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: var(--radius) !important;
+    padding: 1.75rem;
+    box-shadow: 0 12px 36px -10px var(--shadow) !important;
+    transition: border-color var(--t-base), transform var(--t-base), box-shadow var(--t-base) !important;
+}
+
+.gs-card:hover, .card:hover {
+    border-color: var(--accent) !important;
+    box-shadow: 0 16px 44px -8px var(--shadow), 0 0 28px -4px var(--accent-glow) !important;
+}
+
+.card-header {
+    background-color: transparent !important;
+    border-bottom: 1px solid var(--border) !important;
+    border-radius: 0 !important;
+    padding: 1.25rem 1.65rem !important;
+    font-weight: 600;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.card-footer {
+    background-color: transparent !important;
+    border-top: 1px solid var(--border) !important;
+    border-radius: 0 !important;
+    padding: 1.1rem 1.65rem !important;
+    font-size: 0.9rem;
+    color: var(--text-2);
+}
+
+.gs-card-label {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-2);
+    margin-bottom: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.gs-card-val {
+    font-size: 2.85rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    line-height: 1.08;
+    margin-bottom: 0.45rem;
+}
+
+.gs-card-sub {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+
+/* Section Dividers & Index Rails */
+.section-rail {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+    margin-top: 1.5rem;
+}
+
+.section-rail-title {
+    font-size: 1.55rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text);
+}
+
+.section-rail-counter {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--accent-text);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+/* ==========================================================================
+   Awwwards Ledgers & Data Tables
+   ========================================================================== */
+.table, .gs-table {
+    width: 100%;
+    border-collapse: collapse !important;
+    background-color: transparent !important;
+    color: var(--text) !important;
+    margin-bottom: 0 !important;
+}
+
+.table th, .gs-table th {
+    font-family: var(--font-mono) !important;
+    font-size: 0.8rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.09em !important;
+    color: var(--text-2) !important;
+    font-weight: 700 !important;
+    text-align: left !important;
+    padding: 1.15rem 1.35rem !important;
+    border-bottom: 1px solid var(--border) !important;
+    border-top: none !important;
+    background: transparent !important;
+}
+
+.table td, .gs-table td {
+    padding: 1.15rem 1.35rem !important;
+    border-bottom: 1px solid var(--border) !important;
+    border-top: none !important;
+    font-size: 1rem !important;
+    color: var(--text) !important;
+    vertical-align: middle !important;
+    background: transparent !important;
+    transition: background-color var(--t-fast);
+}
+
+.table tbody tr:hover td, .gs-table tbody tr:hover td {
+    background-color: var(--glass-bg-hover) !important;
+}
+
+/* ==========================================================================
+   Modals & Dialogs
+   ========================================================================== */
+.modal-content {
+    background-color: var(--bg-elevated) !important;
+    background-image: radial-gradient(var(--dot) 1.2px, transparent 1.2px) !important;
+    background-size: 22px 22px !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: 0 24px 70px -15px rgba(0, 0, 0, 0.85), 0 0 50px -10px var(--accent-glow) !important;
+    color: var(--text) !important;
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--border) !important;
+    border-radius: 0 !important;
+    padding: 1.6rem 2rem !important;
+}
+
+.modal-header .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+    opacity: 0.7;
+    transition: opacity var(--t-fast);
+}
+
+.modal-header .btn-close:hover {
+    opacity: 1;
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border) !important;
+    border-radius: 0 !important;
+    padding: 1.35rem 2rem !important;
+}
+
+/* ==========================================================================
+   Form Controls
+   ========================================================================== */
+.form-control, .form-select {
+    background-color: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: var(--radius-sm) !important;
+    color: var(--text) !important;
+    font-family: var(--font-body) !important;
+    font-size: 1.02rem !important;
+    padding: 0.8rem 1.15rem !important;
+    outline: none !important;
+    box-shadow: none !important;
+    transition: all var(--t-fast) !important;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 3px var(--accent-glow) !important;
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+}
+
+.form-select option {
+    background-color: var(--bg-elevated);
+    color: var(--text);
+}
+
+/* ==========================================================================
+   Buttons (Marco Madonna Electric Violet & Frosted Styles)
+   ========================================================================== */
+.btn-gs, .btn-mm {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.88rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.75rem 1.65rem;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-sm) !important;
+    background: var(--accent-strong);
+    color: #ffffff !important;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    box-shadow: 0 0 24px -3px var(--accent-glow);
+    transition: all var(--t-base);
+}
+
+.btn-gs:hover, .btn-mm:hover {
+    background: var(--accent);
+    box-shadow: 0 0 36px 3px var(--accent-glow);
+    transform: translateY(-2px);
+}
+
+.btn-gs:active, .btn-mm:active {
+    transform: translateY(1px);
+}
+
+.btn-gs-outline, .btn-mm-outline {
+    background: var(--glass-bg);
+    color: var(--text) !important;
+    border: 1px solid var(--glass-border);
+    box-shadow: none;
+}
+
+.btn-gs-outline:hover, .btn-mm-outline:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--accent);
+    color: var(--accent-text) !important;
+    box-shadow: 0 0 20px -3px var(--accent-glow);
+}
+
+.btn-gs-sm, .btn-mm-sm {
+    padding: 0.45rem 1rem;
+    font-size: 0.78rem;
+}
+
+/* Quick Role Switcher Chips */
+.role-chip {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    padding: 0.55rem 1.15rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-pill);
+    color: var(--text-2);
+    cursor: pointer;
+    transition: all var(--t-fast);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.role-chip:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--accent);
+    color: var(--text);
+}
+
+.role-chip.active {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    color: var(--accent-text);
+    font-weight: 700;
+    box-shadow: 0 0 20px -2px var(--accent-glow);
+}
+
+/* ==========================================================================
+   Pill Badges & Status Signals
+   ========================================================================== */
+.pill-tag, .badge-status {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 4px 13px;
+    border-radius: var(--radius-pill);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    color: var(--accent-text);
+    line-height: 1.25;
+}
+
+.pill-tag.dark, .badge-present, .badge-approved, .badge-paid, .badge-active {
+    background: var(--signal-green-dim) !important;
+    color: var(--signal-green) !important;
+    border-color: rgba(16, 185, 129, 0.45) !important;
+}
+
+.pill-tag.red, .badge-absent, .badge-rejected, .badge-inactive, .badge-terminated {
+    background: var(--signal-red-dim) !important;
+    color: var(--signal-red) !important;
+    border-color: rgba(244, 63, 94, 0.45) !important;
+}
+
+.pill-tag.amber, .badge-pending, .badge-halfday {
+    background: var(--signal-amber-dim) !important;
+    border-color: rgba(245, 158, 11, 0.45) !important;
+    color: var(--signal-amber) !important;
+}
+
+.pill-tag.light, .badge-leave, .badge-processed {
+    background: var(--glass-bg) !important;
+    color: var(--accent-text) !important;
+    border: 1px solid var(--glass-border) !important;
+}
+
+/* Alerts */
+.alert {
+    border-radius: var(--radius-sm) !important;
+    border: 1px solid var(--glass-border) !important;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    padding: 1.1rem 1.6rem !important;
+    backdrop-filter: blur(16px);
+}
+
+.alert-success {
+    background-color: var(--signal-green-dim) !important;
+    color: #6ee7b7 !important;
+    border-color: rgba(16, 185, 129, 0.4) !important;
+}
+
+.alert-danger {
+    background-color: var(--signal-red-dim) !important;
+    color: #fda4af !important;
+    border-color: rgba(244, 63, 94, 0.4) !important;
+}
+
+.alert-info {
+    background-color: var(--accent-dim) !important;
+    color: var(--accent-text) !important;
+    border-color: rgba(139, 92, 246, 0.4) !important;
+}
+
+/* ==========================================================================
+   Payslip Official Letterhead (Printable & Screen)
+   ========================================================================== */
+.payslip-sheet {
+    background: var(--bg-surface);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    padding: 3rem;
+    max-width: 860px;
+    margin: 0 auto;
+    color: var(--text);
+}
+
+@media print {
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+    }
+    .top-chrome, .no-print, .btn-gs, .btn {
+        display: none !important;
+    }
+    .payslip-sheet {
+        border: none !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+    }
+}
