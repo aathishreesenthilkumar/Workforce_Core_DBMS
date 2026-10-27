@@ -74,9 +74,21 @@ const users = [
     { user_id: 15, employee_id: 11, username: 'kavita_hr', password_hash: empHash, role: 'EMPLOYEE', is_active: true },
     { user_id: 16, employee_id: 12, username: 'lucas_hr', password_hash: empHash, role: 'EMPLOYEE', is_active: true },
     { user_id: 17, employee_id: 13, username: 'meera_hr', password_hash: empHash, role: 'EMPLOYEE', is_active: true },
-    { user_id: 18, employee_id: 17, username: 'quinn_fin', password_hash: empHash, role: 'EMPLOYEE', is_active: true },
-    { user_id: 19, employee_id: 18, username: 'rahul_tax', password_hash: empHash, role: 'EMPLOYEE', is_active: true },
-    { user_id: 20, employee_id: 19, username: 'sophia_acc', password_hash: empHash, role: 'EMPLOYEE', is_active: true }
+    { user_id: 18, employee_id: 14, username: 'nathan_hr', password_hash: empHash, role: 'EMPLOYEE', is_active: true },
+    { user_id: 19, employee_id: 17, username: 'quinn_fin', password_hash: empHash, role: 'EMPLOYEE', is_active: true },
+    { user_id: 20, employee_id: 18, username: 'rahul_tax', password_hash: empHash, role: 'EMPLOYEE', is_active: true },
+    { user_id: 21, employee_id: 19, username: 'sophia_acc', password_hash: empHash, role: 'EMPLOYEE', is_active: true },
+    { user_id: 22, employee_id: 20, username: 'thomas_fin', password_hash: empHash, role: 'EMPLOYEE', is_active: true },
+    { user_id: 23, employee_id: 22, username: 'victor_fac', password_hash: empHash, role: 'EMPLOYEE', is_active: true },
+    { user_id: 24, employee_id: 23, username: 'wendy_scm', password_hash: empHash, role: 'EMPLOYEE', is_active: true },
+    { user_id: 25, employee_id: 24, username: 'xavier_ops', password_hash: empHash, role: 'EMPLOYEE', is_active: true },
+    { user_id: 26, employee_id: 25, username: 'yash_ops', password_hash: empHash, role: 'EMPLOYEE', is_active: true },
+    { user_id: 27, employee_id: 26, username: 'zoe_ops', password_hash: empHash, role: 'EMPLOYEE', is_active: true },
+    { user_id: 28, employee_id: 28, username: 'bella_brand', password_hash: empHash, role: 'EMPLOYEE', is_active: true },
+    { user_id: 29, employee_id: 29, username: 'chetan_mkt', password_hash: empHash, role: 'EMPLOYEE', is_active: true },
+    { user_id: 30, employee_id: 30, username: 'daisy_sales', password_hash: empHash, role: 'EMPLOYEE', is_active: true },
+    { user_id: 31, employee_id: 31, username: 'elijah_mkt', password_hash: empHash, role: 'EMPLOYEE', is_active: true },
+    { user_id: 32, employee_id: 32, username: 'farhan_mkt', password_hash: empHash, role: 'EMPLOYEE', is_active: true }
 ];
 
 // 4. Leave Types

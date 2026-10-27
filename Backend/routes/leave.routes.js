@@ -75,8 +75,13 @@ router.post('/apply', isAuthenticated, async (req, res) => {
         const currentUser = req.session.user;
         const { leave_type_id, start_date, end_date, reason } = req.body;
 
+        let targetEmpId = currentUser.employee_id;
+        if (currentUser.role !== 'EMPLOYEE' && req.body.employee_id) {
+            targetEmpId = parseInt(req.body.employee_id, 10);
+        }
+
         const request = await leaveService.applyLeave({
-            employee_id: currentUser.employee_id,
+            employee_id: targetEmpId,
             leave_type_id: parseInt(leave_type_id, 10),
             start_date,
             end_date,

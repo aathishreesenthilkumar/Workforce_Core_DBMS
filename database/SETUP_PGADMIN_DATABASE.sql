@@ -311,14 +311,21 @@ INSERT INTO users (employee_id, username, password_hash, role, is_active) VALUES
 (11, 'kavita_hr', '$2a$10$kXvAYhr55fHzhcbTGggeveWtOQokmI9s4dBMSb0hMJ.AKc1dL56Je', 'EMPLOYEE', TRUE),
 (12, 'lucas_hr', '$2a$10$kXvAYhr55fHzhcbTGggeveWtOQokmI9s4dBMSb0hMJ.AKc1dL56Je', 'EMPLOYEE', TRUE),
 (13, 'meera_hr', '$2a$10$kXvAYhr55fHzhcbTGggeveWtOQokmI9s4dBMSb0hMJ.AKc1dL56Je', 'EMPLOYEE', TRUE),
+(14, 'nathan_hr', '$2a$10$kXvAYhr55fHzhcbTGggeveWtOQokmI9s4dBMSb0hMJ.AKc1dL56Je', 'EMPLOYEE', TRUE),
 (17, 'quinn_fin', '$2a$10$kXvAYhr55fHzhcbTGggeveWtOQokmI9s4dBMSb0hMJ.AKc1dL56Je', 'EMPLOYEE', TRUE),
 (18, 'rahul_tax', '$2a$10$kXvAYhr55fHzhcbTGggeveWtOQokmI9s4dBMSb0hMJ.AKc1dL56Je', 'EMPLOYEE', TRUE),
 (19, 'sophia_acc', '$2a$10$kXvAYhr55fHzhcbTGggeveWtOQokmI9s4dBMSb0hMJ.AKc1dL56Je', 'EMPLOYEE', TRUE),
+(20, 'thomas_fin', '$2a$10$kXvAYhr55fHzhcbTGggeveWtOQokmI9s4dBMSb0hMJ.AKc1dL56Je', 'EMPLOYEE', TRUE),
 (22, 'victor_fac', '$2a$10$kXvAYhr55fHzhcbTGggeveWtOQokmI9s4dBMSb0hMJ.AKc1dL56Je', 'EMPLOYEE', TRUE),
 (23, 'wendy_scm', '$2a$10$kXvAYhr55fHzhcbTGggeveWtOQokmI9s4dBMSb0hMJ.AKc1dL56Je', 'EMPLOYEE', TRUE),
+(24, 'xavier_ops', '$2a$10$kXvAYhr55fHzhcbTGggeveWtOQokmI9s4dBMSb0hMJ.AKc1dL56Je', 'EMPLOYEE', TRUE),
+(25, 'yash_ops', '$2a$10$kXvAYhr55fHzhcbTGggeveWtOQokmI9s4dBMSb0hMJ.AKc1dL56Je', 'EMPLOYEE', TRUE),
+(26, 'zoe_ops', '$2a$10$kXvAYhr55fHzhcbTGggeveWtOQokmI9s4dBMSb0hMJ.AKc1dL56Je', 'EMPLOYEE', TRUE),
 (28, 'bella_brand', '$2a$10$kXvAYhr55fHzhcbTGggeveWtOQokmI9s4dBMSb0hMJ.AKc1dL56Je', 'EMPLOYEE', TRUE),
 (29, 'chetan_mkt', '$2a$10$kXvAYhr55fHzhcbTGggeveWtOQokmI9s4dBMSb0hMJ.AKc1dL56Je', 'EMPLOYEE', TRUE),
-(30, 'daisy_sales', '$2a$10$kXvAYhr55fHzhcbTGggeveWtOQokmI9s4dBMSb0hMJ.AKc1dL56Je', 'EMPLOYEE', TRUE);
+(30, 'daisy_sales', '$2a$10$kXvAYhr55fHzhcbTGggeveWtOQokmI9s4dBMSb0hMJ.AKc1dL56Je', 'EMPLOYEE', TRUE),
+(31, 'elijah_mkt', '$2a$10$kXvAYhr55fHzhcbTGggeveWtOQokmI9s4dBMSb0hMJ.AKc1dL56Je', 'EMPLOYEE', TRUE),
+(32, 'farhan_mkt', '$2a$10$kXvAYhr55fHzhcbTGggeveWtOQokmI9s4dBMSb0hMJ.AKc1dL56Je', 'EMPLOYEE', TRUE);
 
 -- ----------------------------------------------------------------------------
 -- 4. INSERT LEAVE TYPES

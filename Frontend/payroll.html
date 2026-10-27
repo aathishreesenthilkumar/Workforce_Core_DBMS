@@ -62,6 +62,36 @@
             </p>
         </section>
 
+        <!-- Filter Rail for Admin / Manager -->
+        <section class="mb-4 admin-only" id="payrollFilterSection" style="display: none;">
+            <div class="card p-3 p-md-4">
+                <form id="payrollFilterForm" class="row g-3 align-items-end">
+                    <div class="col-12 col-md-5">
+                        <label class="d-block font-monospace text-uppercase mb-1" style="font-size: 0.85rem; letter-spacing: 0.06em; color: var(--text-2);">
+                            Filter by Employee
+                        </label>
+                        <select class="form-select font-monospace" id="payrollEmployeeFilter">
+                            <option value="">All Employees</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label class="d-block font-monospace text-uppercase mb-1" style="font-size: 0.85rem; letter-spacing: 0.06em; color: var(--text-2);">
+                            Pay Month
+                        </label>
+                        <input type="month" class="form-control font-monospace" id="payrollMonthFilter">
+                    </div>
+                    <div class="col-12 col-md-3 d-flex gap-2">
+                        <button type="submit" class="btn-gs w-100 py-2">
+                            <span>Filter</span>
+                        </button>
+                        <button type="button" class="btn-gs-outline btn-gs w-auto py-2 px-3" onclick="resetPayrollFilters()">
+                            Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
         <!-- Payroll History Table -->
         <section>
             <div class="section-rail">
@@ -132,6 +162,10 @@
             const user = await App.checkAuth();
             if (!user) return;
 
+            if (user.role === 'ADMIN' || user.role === 'MANAGER') {
+                loadPayrollEmployeesDropdown();
+            }
+
             loadPayrollHistory();
 
             document.getElementById('mobileNavToggle')?.addEventListener('click', () => {
@@ -139,12 +173,34 @@
             });
         });
 
+        async function loadPayrollEmployeesDropdown() {
+            try {
+                const res = await App.fetchAPI('/api/employees?limit=100');
+                if (res && res.employees) {
+                    const select = document.getElementById('payrollEmployeeFilter');
+                    if (select) {
+                        select.innerHTML = '<option value="">All Employees</option>' +
+                            res.employees.map(e => `<option value="${e.employee_id}">${e.employee_code} • ${e.full_name} (${e.department_name})</option>`).join('');
+                    }
+                }
+            } catch (err) {
+                console.warn('Payroll employee filter note:', err.message);
+            }
+        }
+
         async function loadPayrollHistory() {
             const tbody = document.getElementById('payrollTableBody');
+            const empId = document.getElementById('payrollEmployeeFilter')?.value;
+            const monthInput = document.getElementById('payrollMonthFilter')?.value;
+
+            let url = '/api/payroll?limit=100&';
+            if (empId) url += `employee_id=${empId}&`;
+            if (monthInput) url += `pay_month=${monthInput}-01&`;
+
             try {
-                const res = await App.fetchAPI('/api/payroll');
+                const res = await App.fetchAPI(url);
                 if (!res || !res.payroll || res.payroll.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="10" class="text-center py-4 font-monospace" style="color: var(--text-muted);">No payroll records found.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="10" class="text-center py-4 font-monospace" style="color: var(--text-muted);">No payroll records found matching filters.</td></tr>';
                     return;
                 }
 
@@ -173,6 +229,19 @@
             } catch (err) {
                 tbody.innerHTML = `<tr><td colspan="10" class="text-center text-danger py-4 font-monospace">${err.message}</td></tr>`;
             }
+        }
+
+        document.getElementById('payrollFilterForm')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            loadPayrollHistory();
+        });
+
+        function resetPayrollFilters() {
+            const empF = document.getElementById('payrollEmployeeFilter');
+            const mF = document.getElementById('payrollMonthFilter');
+            if (empF) empF.value = '';
+            if (mF) mF.value = '';
+            loadPayrollHistory();
         }
 
         function formatMonthYear(dateStr) {

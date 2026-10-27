@@ -66,13 +66,14 @@ router.post('/mark', isAuthenticated, async (req, res) => {
         const currentUser = req.session.user;
         let { employee_id, attendance_date, check_in, check_out, attendance_status, remarks } = req.body;
 
-        // An employee can only mark for themselves
-        if (currentUser.role === 'EMPLOYEE') {
+        // An employee can only mark for themselves; managers/admins can mark for any employee, or default to themselves
+        if (currentUser.role === 'EMPLOYEE' || !employee_id) {
             employee_id = currentUser.employee_id;
-            // Default to today's date if not provided
-            if (!attendance_date) {
-                attendance_date = new Date().toISOString().split('T')[0];
-            }
+        }
+
+        // Default to today's date if not provided
+        if (!attendance_date) {
+            attendance_date = new Date().toISOString().split('T')[0];
         }
 
         if (!employee_id || !attendance_date || !attendance_status) {

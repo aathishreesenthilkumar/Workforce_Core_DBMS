@@ -98,18 +98,32 @@
             <!-- Fast Role Picker Chips -->
             <div class="mb-3">
                 <label class="d-block font-monospace text-uppercase mb-1" style="font-size: 0.76rem; letter-spacing: 0.08em; color: var(--accent-text);">
-                    Select Role Preset:
+                    Quick Role Presets:
                 </label>
-                <div class="d-flex flex-wrap gap-2">
+                <div class="d-flex flex-wrap gap-2 mb-2">
                     <button type="button" class="role-chip demo-btn active" data-user="admin" data-pass="admin123">
-                        <i class="fa-solid fa-shield-halved"></i> Admin
+                        <i class="fa-solid fa-shield-halved"></i> Admin (CTO)
                     </button>
                     <button type="button" class="role-chip demo-btn" data-user="isabella_hr" data-pass="manager123">
                         <i class="fa-solid fa-user-tie"></i> HR Manager
                     </button>
-                    <button type="button" class="role-chip demo-btn" data-user="brianne_db" data-pass="emp123">
-                        <i class="fa-solid fa-user"></i> Employee
+                    <button type="button" class="role-chip demo-btn" data-user="olivia_fin" data-pass="manager123">
+                        <i class="fa-solid fa-calculator"></i> Finance Head
                     </button>
+                    <button type="button" class="role-chip demo-btn" data-user="brianne_db" data-pass="emp123">
+                        <i class="fa-solid fa-user"></i> IT Staff
+                    </button>
+                </div>
+
+                <!-- Complete 32-Employee Dropdown Selector -->
+                <div class="mt-2">
+                    <label for="allEmployeesSelect" class="d-block font-monospace text-uppercase mb-1" style="font-size: 0.74rem; letter-spacing: 0.06em; color: var(--text-2);">
+                        Or Choose Any Employee (All 32 Accounts Available):
+                    </label>
+                    <select id="allEmployeesSelect" class="form-select font-monospace" style="font-size: 0.82rem; background: var(--glass-bg); color: var(--text); border-color: var(--border);">
+                        <option value="">-- Choose Any Employee Account --</option>
+                    </select>
+                    <div id="selectedUserBadge" class="mt-1 font-monospace small" style="font-size: 0.74rem; color: var(--accent-text); display: none;"></div>
                 </div>
             </div>
 
@@ -175,8 +189,65 @@
                 const u = btn.getAttribute('data-user');
                 const p = btn.getAttribute('data-pass');
                 setCredentials(u, p);
+                const sel = document.getElementById('allEmployeesSelect');
+                if (sel) sel.value = '';
+                const badge = document.getElementById('selectedUserBadge');
+                if (badge) badge.style.display = 'none';
             });
         });
+
+        // Load all 32 employee accounts dynamically
+        async function loadAllAccounts() {
+            try {
+                const res = await App.fetchAPI('/api/auth/demo-users');
+                if (res && res.users && res.users.length > 0) {
+                    const select = document.getElementById('allEmployeesSelect');
+                    const depts = {};
+                    res.users.forEach(u => {
+                        const d = u.department_name || 'General';
+                        if (!depts[d]) depts[d] = [];
+                        depts[d].push(u);
+                    });
+
+                    select.innerHTML = '<option value="">-- Choose Any Employee Account (All ' + res.users.length + ' Available) --</option>';
+                    Object.keys(depts).forEach(deptName => {
+                        const group = document.createElement('optgroup');
+                        group.label = `Dept: ${deptName}`;
+                        depts[deptName].forEach(u => {
+                            const opt = document.createElement('option');
+                            const defaultPw = u.role === 'ADMIN' ? 'admin123' : u.role === 'MANAGER' ? 'manager123' : 'emp123';
+                            opt.value = u.username;
+                            opt.setAttribute('data-password', defaultPw);
+                            opt.setAttribute('data-name', u.full_name);
+                            opt.setAttribute('data-role', u.role);
+                            opt.setAttribute('data-desig', u.designation);
+                            opt.textContent = `${u.employee_code} • ${u.full_name} (${u.role}: ${u.designation})`;
+                            group.appendChild(opt);
+                        });
+                        select.appendChild(group);
+                    });
+
+                    select.addEventListener('change', () => {
+                        const selOpt = select.selectedOptions[0];
+                        if (selOpt && selOpt.value) {
+                            const u = selOpt.value;
+                            const p = selOpt.getAttribute('data-password');
+                            const name = selOpt.getAttribute('data-name');
+                            const desig = selOpt.getAttribute('data-desig');
+                            const role = selOpt.getAttribute('data-role');
+                            setCredentials(u, p);
+                            document.querySelectorAll('.demo-btn').forEach(b => b.classList.remove('active'));
+                            const badge = document.getElementById('selectedUserBadge');
+                            badge.style.display = 'block';
+                            badge.innerHTML = `<i class="fa-solid fa-circle-check text-success me-1"></i> Selected: <strong>${name}</strong> [${role}: ${desig}] (Password: <code>${p}</code>)`;
+                        }
+                    });
+                }
+            } catch (err) {
+                console.warn('Demo users note:', err.message);
+            }
+        }
+        loadAllAccounts();
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();

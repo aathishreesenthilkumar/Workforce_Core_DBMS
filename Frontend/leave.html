@@ -72,12 +72,19 @@
 
         <!-- Leave Balance Quota Cards Grid -->
         <section class="mb-5">
-            <div class="section-rail">
-                <h2 class="section-rail-title">
-                    <i class="fa-solid fa-scale-balanced" style="font-size: 1rem; color: var(--accent);"></i>
-                    Allocated Quota Balances
-                </h2>
-                <span class="section-rail-counter">Fiscal Year 2026</span>
+            <div class="section-rail d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2">
+                <div>
+                    <h2 class="section-rail-title">
+                        <i class="fa-solid fa-scale-balanced" style="font-size: 1rem; color: var(--accent);"></i>
+                        Allocated Quota Balances
+                    </h2>
+                    <span class="section-rail-counter">Fiscal Year 2026</span>
+                </div>
+                <div class="admin-only" id="leaveBalanceFilterWrapper" style="display: none;">
+                    <select id="leaveViewEmpSelect" class="form-select font-monospace" style="font-size: 0.85rem; min-width: 280px;">
+                        <option value="">Viewing: Self</option>
+                    </select>
+                </div>
             </div>
             <div class="row g-3" id="leaveBalancesContainer">
                 <div class="col-12 text-center py-4 font-monospace" style="color: var(--text-muted);">Loading leave balances from database...</div>
@@ -133,6 +140,14 @@
                 </div>
                 <form id="applyLeaveForm">
                     <div class="modal-body p-4">
+                        <div class="mb-3 admin-only" id="leaveApplicantWrapper" style="display: none;">
+                            <label class="d-block font-monospace text-uppercase mb-1" style="font-size: 0.85rem; color: var(--text-2);">
+                                Apply For Employee (Manager / Admin)
+                            </label>
+                            <select class="form-select font-monospace" id="leaveApplicantSelect">
+                                <option value="">-- Apply For Current Session User --</option>
+                            </select>
+                        </div>
                         <div class="mb-3">
                             <label class="d-block font-monospace text-uppercase mb-1" style="font-size: 0.85rem; color: var(--text-2);">
                                 Leave Category
@@ -188,6 +203,10 @@
             const user = await App.checkAuth();
             if (!user) return;
 
+            if (user.role === 'ADMIN' || user.role === 'MANAGER') {
+                loadLeaveEmployeesDropdowns(user);
+            }
+
             loadLeaveBalances();
             loadLeaveTypes();
             loadLeaveHistory();
@@ -199,6 +218,35 @@
                 document.getElementById('mainNav').classList.toggle('show');
             });
         });
+
+        async function loadLeaveEmployeesDropdowns(currentUser) {
+            try {
+                const res = await App.fetchAPI('/api/employees?limit=100');
+                if (res && res.employees) {
+                    const viewSelect = document.getElementById('leaveViewEmpSelect');
+                    const applicantSelect = document.getElementById('leaveApplicantSelect');
+
+                    const options = res.employees.map(e => 
+                        `<option value="${e.employee_id}">${e.employee_code} • ${e.full_name} (${e.department_name})</option>`
+                    ).join('');
+
+                    if (viewSelect) {
+                        viewSelect.innerHTML = `<option value="">Viewing: Self (${currentUser.full_name})</option>` + options;
+                        viewSelect.addEventListener('change', () => {
+                            const empId = viewSelect.value;
+                            loadLeaveBalances(empId);
+                            loadLeaveHistory(empId);
+                        });
+                    }
+
+                    if (applicantSelect) {
+                        applicantSelect.innerHTML = `<option value="">-- Apply For Self (${currentUser.full_name}) --</option>` + options;
+                    }
+                }
+            } catch (err) {
+                console.warn('Leave employees note:', err.message);
+            }
+        }
 
         function calculateLeaveDays() {
             const s = document.getElementById('leaveStartDate').value;
@@ -220,9 +268,11 @@
             }
         }
 
-        async function loadLeaveBalances() {
+        async function loadLeaveBalances(targetEmpId = null) {
             try {
-                const res = await App.fetchAPI('/api/leave/balances');
+                let url = '/api/leave/balances';
+                if (targetEmpId) url += `?employee_id=${targetEmpId}`;
+                const res = await App.fetchAPI(url);
                 const container = document.getElementById('leaveBalancesContainer');
                 if (!res || !res.balances || res.balances.length === 0) {
                     container.innerHTML = '<div class="col-12 font-monospace py-3" style="color: var(--text-muted);">No leave balance records found.</div>';
@@ -271,9 +321,11 @@
             }
         }
 
-        async function loadLeaveHistory() {
+        async function loadLeaveHistory(targetEmpId = null) {
             try {
-                const res = await App.fetchAPI('/api/leave');
+                let url = '/api/leave';
+                if (targetEmpId) url += `?employee_id=${targetEmpId}`;
+                const res = await App.fetchAPI(url);
                 const tbody = document.getElementById('leaveHistoryTable');
                 if (!res || !res.requests || res.requests.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 font-monospace" style="color: var(--text-muted);">No leave requests found.</td></tr>';
@@ -302,12 +354,18 @@
             const btn = document.getElementById('submitLeaveBtn');
             btn.disabled = true;
 
+            const selectedApplicant = document.getElementById('leaveApplicantSelect')?.value;
+
             const payload = {
                 leave_type_id: document.getElementById('leaveTypeSelect').value,
                 start_date: document.getElementById('leaveStartDate').value,
                 end_date: document.getElementById('leaveEndDate').value,
                 reason: document.getElementById('leaveReason').value
             };
+
+            if (selectedApplicant) {
+                payload.employee_id = parseInt(selectedApplicant, 10);
+            }
 
             try {
                 await App.fetchAPI('/api/leave/apply', {

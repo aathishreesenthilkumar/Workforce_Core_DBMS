@@ -58,8 +58,30 @@ async function executeMemoryQuery(text, params = []) {
                 full_name: emp ? emp.full_name : 'User',
                 email: emp ? emp.email : '',
                 designation: emp ? emp.designation : '',
+                department_id: emp ? emp.department_id : 1,
                 department_name: dept ? dept.department_name : 'General'
             }]
+        };
+    }
+
+    // 2b. Demo Users List
+    if (upper.includes('FROM USERS U') && (upper.includes('WHERE U.IS_ACTIVE = TRUE') || upper.includes('DEMO-USERS'))) {
+        return {
+            rows: mem.users.filter(u => u.is_active).map(u => {
+                const emp = mem.employees.find(e => e.employee_id === u.employee_id);
+                const dept = emp ? mem.departments.find(d => d.department_id === emp.department_id) : null;
+                return {
+                    user_id: u.user_id,
+                    username: u.username,
+                    role: u.role,
+                    employee_id: u.employee_id,
+                    employee_code: emp ? emp.employee_code : 'EMP000',
+                    full_name: emp ? emp.full_name : 'User',
+                    designation: emp ? emp.designation : '',
+                    department_id: dept ? dept.department_id : 1,
+                    department_name: dept ? dept.department_name : 'General'
+                };
+            })
         };
     }
 

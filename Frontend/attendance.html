@@ -74,19 +74,19 @@
         <section class="mb-4">
             <div class="card p-3 p-md-4">
                 <form id="filterForm" class="row g-3 align-items-end">
-                    <div class="col-12 col-md-3">
+                    <div class="col-12 col-md-2">
                         <label class="d-block font-monospace text-uppercase mb-1" style="font-size: 0.85rem; letter-spacing: 0.06em; color: var(--text-2);">
                             Start Date
                         </label>
                         <input type="date" class="form-control" id="startDateFilter">
                     </div>
-                    <div class="col-12 col-md-3">
+                    <div class="col-12 col-md-2">
                         <label class="d-block font-monospace text-uppercase mb-1" style="font-size: 0.85rem; letter-spacing: 0.06em; color: var(--text-2);">
                             End Date
                         </label>
                         <input type="date" class="form-control" id="endDateFilter">
                     </div>
-                    <div class="col-12 col-md-3">
+                    <div class="col-12 col-md-2">
                         <label class="d-block font-monospace text-uppercase mb-1" style="font-size: 0.85rem; letter-spacing: 0.06em; color: var(--text-2);">
                             Status Filter
                         </label>
@@ -96,6 +96,14 @@
                             <option value="ABSENT">Absent</option>
                             <option value="HALF_DAY">Half Day</option>
                             <option value="ON_LEAVE">On Leave</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-3 admin-only" id="employeeFilterCol" style="display: none;">
+                        <label class="d-block font-monospace text-uppercase mb-1" style="font-size: 0.85rem; letter-spacing: 0.06em; color: var(--text-2);">
+                            Employee Filter
+                        </label>
+                        <select class="form-select font-monospace" id="employeeFilter">
+                            <option value="">All Employees</option>
                         </select>
                     </div>
                     <div class="col-12 col-md-3 d-flex gap-2">
@@ -159,6 +167,14 @@
                 </div>
                 <form id="attendanceForm">
                     <div class="modal-body p-4">
+                        <div class="mb-3 admin-only" id="modalEmployeeWrapper" style="display: none;">
+                            <label class="d-block font-monospace text-uppercase mb-1" style="font-size: 0.85rem; color: var(--text-2);">
+                                Record For Employee (Manager / Admin)
+                            </label>
+                            <select class="form-select font-monospace" id="modalEmployeeId">
+                                <option value="">-- Log For Current Session User --</option>
+                            </select>
+                        </div>
                         <div class="mb-3">
                             <label class="d-block font-monospace text-uppercase mb-1" style="font-size: 0.85rem; color: var(--text-2);">
                                 Attendance Date
@@ -221,6 +237,10 @@
             const now = new Date();
             document.getElementById('modalCheckIn').value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
+            if (user.role === 'ADMIN' || user.role === 'MANAGER') {
+                loadEmployeesDropdowns();
+            }
+
             loadAttendance();
 
             document.getElementById('mobileNavToggle')?.addEventListener('click', () => {
@@ -228,15 +248,40 @@
             });
         });
 
+        async function loadEmployeesDropdowns() {
+            try {
+                const res = await App.fetchAPI('/api/employees?limit=100');
+                if (res && res.employees) {
+                    const filterSelect = document.getElementById('employeeFilter');
+                    const modalSelect = document.getElementById('modalEmployeeId');
+                    
+                    const options = res.employees.map(e => 
+                        `<option value="${e.employee_id}">${e.employee_code} - ${e.full_name} (${e.department_name})</option>`
+                    ).join('');
+
+                    if (filterSelect) {
+                        filterSelect.innerHTML = '<option value="">All Employees</option>' + options;
+                    }
+                    if (modalSelect) {
+                        modalSelect.innerHTML = '<option value="">-- Log For Current Session User --</option>' + options;
+                    }
+                }
+            } catch (err) {
+                console.warn('Employees dropdown note:', err.message);
+            }
+        }
+
         async function loadAttendance() {
             const start = document.getElementById('startDateFilter').value;
             const end = document.getElementById('endDateFilter').value;
             const status = document.getElementById('statusFilter').value;
+            const empId = document.getElementById('employeeFilter')?.value;
 
             let url = '/api/attendance?';
             if (start) url += `start_date=${start}&`;
             if (end) url += `end_date=${end}&`;
             if (status) url += `status=${status}&`;
+            if (empId) url += `employee_id=${empId}&`;
 
             const tbody = document.getElementById('attendanceTableBody');
             try {
@@ -274,6 +319,8 @@
             document.getElementById('startDateFilter').value = '';
             document.getElementById('endDateFilter').value = '';
             document.getElementById('statusFilter').value = '';
+            const empF = document.getElementById('employeeFilter');
+            if (empF) empF.value = '';
             loadAttendance();
         }
 
@@ -282,6 +329,8 @@
             const btn = document.getElementById('saveAttendanceBtn');
             btn.disabled = true;
 
+            const targetEmp = document.getElementById('modalEmployeeId')?.value;
+
             const payload = {
                 attendance_date: document.getElementById('modalDate').value,
                 check_in: document.getElementById('modalCheckIn').value ? `${document.getElementById('modalCheckIn').value}:00` : null,
@@ -289,6 +338,10 @@
                 attendance_status: document.getElementById('modalStatus').value,
                 remarks: document.getElementById('modalRemarks').value
             };
+
+            if (targetEmp) {
+                payload.employee_id = parseInt(targetEmp, 10);
+            }
 
             try {
                 await App.fetchAPI('/api/attendance/mark', {

@@ -31,6 +31,7 @@ router.post('/login', async (req, res) => {
                 e.full_name,
                 e.email,
                 e.designation,
+                e.department_id,
                 d.department_name
             FROM users u
             JOIN employees e ON u.employee_id = e.employee_id
@@ -80,6 +81,7 @@ router.post('/login', async (req, res) => {
                 full_name: user.full_name,
                 email: user.email,
                 designation: user.designation,
+                department_id: user.department_id,
                 department_name: user.department_name
             };
 
@@ -132,6 +134,98 @@ router.get('/me', (req, res) => {
         success: false,
         message: 'No active session.'
     });
+});
+
+/**
+ * GET /api/auth/demo-users
+ * Retrieves list of all available active user accounts for easy sign-in selection
+ */
+router.get('/demo-users', async (req, res) => {
+    try {
+        const queryText = `
+            SELECT 
+                u.user_id,
+                u.username,
+                u.role,
+                u.employee_id,
+                e.employee_code,
+                e.full_name,
+                e.designation,
+                e.department_id,
+                d.department_name
+            FROM users u
+            JOIN employees e ON u.employee_id = e.employee_id
+            JOIN departments d ON e.department_id = d.department_id
+            WHERE u.is_active = TRUE
+            ORDER BY d.department_id, u.role DESC, e.employee_id;
+        `;
+        const result = await db.query(queryText);
+        res.json({ success: true, users: result.rows });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+/**
+ * POST /api/auth/switch-user
+ * Seamlessly switch active session to any employee without manual re-login
+ */
+router.post('/switch-user', async (req, res) => {
+    try {
+        const { username } = req.body;
+        if (!username) {
+            return res.status(400).json({ success: false, message: 'Username is required.' });
+        }
+
+        const queryText = `
+            SELECT 
+                u.user_id,
+                u.employee_id,
+                u.username,
+                u.role,
+                u.is_active,
+                e.employee_code,
+                e.full_name,
+                e.email,
+                e.designation,
+                e.department_id,
+                d.department_name
+            FROM users u
+            JOIN employees e ON u.employee_id = e.employee_id
+            JOIN departments d ON e.department_id = d.department_id
+            WHERE LOWER(u.username) = LOWER($1);
+        `;
+        const result = await db.query(queryText, [username.trim()]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'User not found.' });
+        }
+
+        const user = result.rows[0];
+        if (!user.is_active) {
+            return res.status(403).json({ success: false, message: 'User is inactive.' });
+        }
+
+        req.session.regenerate((err) => {
+            if (err) {
+                return res.status(500).json({ success: false, message: 'Session regeneration failed.' });
+            }
+            req.session.user = {
+                user_id: user.user_id,
+                employee_id: user.employee_id,
+                employee_code: user.employee_code,
+                username: user.username,
+                role: user.role,
+                full_name: user.full_name,
+                email: user.email,
+                designation: user.designation,
+                department_id: user.department_id,
+                department_name: user.department_name
+            };
+            return res.json({ success: true, user: req.session.user });
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
 });
 
 module.exports = router;
