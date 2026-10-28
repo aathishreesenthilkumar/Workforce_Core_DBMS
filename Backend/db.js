@@ -24,7 +24,7 @@ const poolConfig = process.env.DATABASE_URL
 const pool = new Pool(poolConfig);
 
 pool.on('error', (err) => {
-    isPgConnected = false;
+    console.warn('PostgreSQL pool idle client warning:', err.message);
 });
 
 /**
@@ -572,7 +572,12 @@ async function query(text, params = []) {
         try {
             return await pool.query(text, params);
         } catch (err) {
-            console.warn('PostgreSQL query error, falling back to memory store:', err.message);
+            // Attempt retry once if it was a transient idle timeout
+            try {
+                return await pool.query(text, params);
+            } catch (retryErr) {
+                console.warn('PostgreSQL query error, falling back to memory store:', retryErr.message);
+            }
         }
     }
 
@@ -588,7 +593,11 @@ async function getClient() {
         try {
             return await pool.connect();
         } catch (err) {
-            // fall through to mock client
+            try {
+                return await pool.connect();
+            } catch (retryErr) {
+                // fall through to mock client
+            }
         }
     }
 
