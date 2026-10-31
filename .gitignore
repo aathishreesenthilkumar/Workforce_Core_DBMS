@@ -21,3 +21,8 @@ Thumbs.db
 [Dd]esktop.ini
 .DS_Store
 
+# Academic reports & recordings (kept local, excluded from public repo)
+docs/
+*.mp4
+*.mov
+*.avi

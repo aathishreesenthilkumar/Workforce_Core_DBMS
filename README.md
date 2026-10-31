@@ -291,13 +291,16 @@ To run against a local PostgreSQL server with pgAdmin 4:
 
 ## 🔑 Demo Login Credentials
 
-The system provides three pre-configured accounts with demo quick-fill buttons on the login portal:
+The system provides quick-fill preset buttons on the authentication portal (`login.html`), along with a dropdown selector preloaded with **all 32 employee accounts** across 5 departments. Users can also switch active accounts on the fly using the **`SWITCH USER`** button in the top navigation bar:
 
-| Role | Username / Email | Password | Access Scope |
+| Role | Username | Password | Access Scope |
 | :--- | :--- | :--- | :--- |
-| **System Admin** | `admin@company.com` | `admin123` | Full access: leave approval, batch payroll disbursal, employee management, and database ledger inspection. |
-| **Department Manager** | `manager@company.com` | `manager123` | Departmental access: team attendance tracking, employee directory, departmental leave approvals. |
-| **Staff Employee** | `employee@company.com` | `emp123` | Personal self-service: punch-in/out, leave application, personal attendance history, monthly payslips. |
+| **System Admin (CTO)** | `admin` | `admin123` | Full administrative control: organization-wide leave review, atomic payroll generation, personnel onboarding, and SQL query console. |
+| **HR Manager** | `isabella_hr` | `manager123` | Human Resources management: team attendance oversight, HR department leave review and approvals. |
+| **Finance Head (CFO)** | `olivia_fin` | `manager123` | Finance & Accounts: corporate remuneration ledger, payroll record auditing, and departmental leave review. |
+| **Operations Director** | `uma_ops` | `manager123` | Operations & Logistics: departmental presence tracking and leave reviews. |
+| **Marketing VP** | `aarav_mkt` | `manager123` | Marketing & Sales: campaign personnel attendance and leave reviews. |
+| **Staff Employees (32 Accounts)** | e.g. `brianne_db`, `carlos_fs`, `divya_dev` | `emp123` | Personal self-service: attendance punch-in/out, leave quota applications, and official printable payslip advice receipts. |
 
 ---
 
